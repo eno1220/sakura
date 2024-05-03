@@ -128,6 +128,16 @@ pub fn handle_trap(f: *mut TrapFrame) {
     panic!("handle_trap");
 }
 
+extern "C" {
+    fn exception_entry();
+}
+
+pub fn init() {
+    unsafe {
+        asm!("csrw stvec, {}", in(reg) exception_entry as usize);
+    }
+}
+
 pub fn illegal_instruction() {
     unsafe {
         asm!("unimp");

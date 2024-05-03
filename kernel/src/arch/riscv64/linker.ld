@@ -1,6 +1,6 @@
 /* ref https://operating-system-in-1000-lines.vercel.app/ja/boot */
 
-ENTRY(boot)
+ENTRY(kernel_entry)
 
 SECTIONS {
   . = 0x80200000;
