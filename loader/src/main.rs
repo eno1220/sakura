@@ -8,7 +8,6 @@ use elf::endian::AnyEndian;
 use elf::ElfBytes;
 // use elf::{endian::AnyEndian, ElfBytes};
 use uefi::prelude::*;
-use uefi::proto::media::file::{File, FileAttribute, FileMode};
 use uefi::table::boot::MemoryMap;
 
 #[entry]
@@ -22,6 +21,7 @@ fn efi_main(image: Handle, mut system_table: SystemTable<Boot>) -> Status {
     uefi_services::println!("Memory map size: {}", memmap_size);
 
     let mut memmap_buf = vec![0; memmap_size];
+    #[allow(unused_variables)]
     let memmap = system_table
         .boot_services()
         .memory_map(&mut memmap_buf)
@@ -143,7 +143,7 @@ fn efi_main(image: Handle, mut system_table: SystemTable<Boot>) -> Status {
     uefi_services::println!("new_rsp: {:x}", new_rsp);
 
     drop(file_protocol);
-    let (_, memory_map) = system_table.exit_boot_services();
+    let (_, _memory_map) = system_table.exit_boot_services();
 
     unsafe {
         let entry_point: extern "sysv64" fn(new_rsp: u64) -> ! = core::mem::transmute(entry_point);
@@ -176,6 +176,7 @@ fn calc_size_in_pages_from_bytes(bytes: usize) -> usize {
     (bytes + 0xfff) / 0x1000
 }
 
+#[allow(dead_code)]
 fn print_memory_map(memmap: &MemoryMap) {
     for entry in memmap.entries() {
         uefi_services::println!(

@@ -1,6 +1,6 @@
 use core::arch::asm;
 
-#[warn(dead_code)]
+#[allow(dead_code)]
 struct SbiRet {
     error: i64,
     value: i64,

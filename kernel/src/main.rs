@@ -9,13 +9,17 @@ mod kalloc;
 extern crate alloc;
 
 use alloc::vec;
-use core::arch::asm;
 
+// todo: fix
+#[cfg(target_arch = "riscv64")]
+use core::arch::global_asm;
 #[cfg(target_arch = "riscv64")]
 use crate::arch::riscv64::handler;
 
 #[cfg(target_arch = "x86_64")]
 use crate::arch::x86_64::handler;
+#[cfg(target_arch = "x86_64")]
+use core::arch::asm;
 
 #[cfg(target_arch = "riscv64")]
 global_asm!(
