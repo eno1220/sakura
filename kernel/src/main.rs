@@ -1,10 +1,15 @@
 #![no_std]
 #![no_main]
 #![feature(abi_x86_interrupt)]
+#![feature(alloc_error_handler)]
 
 mod arch;
+mod kalloc;
 
-use core::arch::{asm, global_asm};
+extern crate alloc;
+
+use alloc::vec;
+use core::arch::asm;
 
 #[cfg(target_arch = "riscv64")]
 use crate::arch::riscv64::handler;
@@ -33,6 +38,10 @@ pub extern "C" fn kernel_entry(new_rsp: u64) {
 
 fn init() {
     uart_println!("Hello, world!");
+    let vec = vec![1, 2, 3];
+    uart_println!("{:?}", vec);
+    let vec = vec![1, 2, 3, 4];
+    uart_println!("{:?}", vec);
     handler::init();
     handler::illegal_instruction();
     loop {}
@@ -55,4 +64,9 @@ pub extern "C" fn kernel_main() {
 fn panic(info: &core::panic::PanicInfo) -> ! {
     uart_println!("panic: {:?}", info);
     loop {}
+}
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: core::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
 }
